@@ -499,7 +499,8 @@ function PlanSelectionForm({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        // Casting the motion.div as any fixes the TypeScript error regarding children.
+        <(motion.div as any)
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -648,7 +649,7 @@ function PlanSelectionForm({
               </div>
             )}
           </motion.form>
-        </motion.div>
+        </(motion.div as any)>
       )}
     </AnimatePresence>
   );
