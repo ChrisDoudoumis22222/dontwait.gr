@@ -4,7 +4,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import Head from "next/head";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import { Link as ScrollLink, Element } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionProps } from "framer-motion";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { createClient } from "@supabase/supabase-js";
@@ -52,6 +52,25 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------
+// Helper wrappers for motion elements
+// ---------------------------------------------
+const MotionDiv: React.FC<React.HTMLAttributes<HTMLDivElement> & MotionProps> = (props) => {
+  return <motion.div {...props} />;
+};
+
+const MotionForm: React.FC<React.FormHTMLAttributes<HTMLFormElement> & MotionProps> = (props) => {
+  return <motion.form {...props} />;
+};
+
+const MotionH2: React.FC<React.HTMLAttributes<HTMLHeadingElement> & MotionProps> = (props) => {
+  return <motion.h2 {...props} />;
+};
+
+const MotionP: React.FC<React.HTMLAttributes<HTMLParagraphElement> & MotionProps> = (props) => {
+  return <motion.p {...props} />;
+};
+
+// ---------------------------------------------
 // Define a local interface for pricing plans
 // ---------------------------------------------
 interface PricingPlan {
@@ -75,20 +94,17 @@ const NAV_ITEMS = [
 const HOW_IT_WORKS_STEPS = [
   {
     title: "Εγγραφή & Προσαρμογή",
-    description:
-      "Προσθέστε λογότυπο, πληροφορίες επιχείρησης και υπηρεσίες.",
+    description: "Προσθέστε λογότυπο, πληροφορίες επιχείρησης και υπηρεσίες.",
     icon: Briefcase,
   },
   {
     title: "Μοιραστείτε τη Σελίδα σας",
-    description:
-      "Χρησιμοποιήστε τον μοναδικό σας σύνδεσμο ή συνδέστε τον δικό σας τομέα.",
+    description: "Χρησιμοποιήστε τον μοναδικό σας σύνδεσμο ή συνδέστε τον δικό σας τομέα.",
     icon: Globe,
   },
   {
     title: "Λάβετε Κρατήσεις & Διαχειριστείτε",
-    description:
-      "Ενημερώσεις σε πραγματικό χρόνο & αναλύσεις στον Πίνακα Ελέγχου.",
+    description: "Ενημερώσεις σε πραγματικό χρόνο & αναλύσεις στον Πίνακα Ελέγχου.",
     icon: TrendingUp,
   },
 ];
@@ -96,14 +112,12 @@ const HOW_IT_WORKS_STEPS = [
 const FEATURES = [
   {
     title: "Εξατομικευμένη Σελίδα Κρατήσεων",
-    description:
-      "Προσαρμόστε την εμφάνιση και τη λειτουργικότητα της σελίδας σας.",
+    description: "Προσαρμόστε την εμφάνιση και τη λειτουργικότητα της σελίδας σας.",
     icon: Calendar,
   },
   {
     title: "Χρήση Δικού σας Τομέα",
-    description:
-      "Συνδέστε τον προσωπικό σας τομέα για επαγγελματική παρουσία.",
+    description: "Συνδέστε τον προσωπικό σας τομέα για επαγγελματική παρουσία.",
     icon: Globe,
   },
   {
@@ -113,20 +127,17 @@ const FEATURES = [
   },
   {
     title: "Αυτοματοποιημένες Ειδοποιήσεις",
-    description:
-      "Στείλτε αυτόματα επιβεβαιώσεις και υπενθυμίσεις στους πελάτες.",
+    description: "Στείλτε αυτόματα επιβεβαιώσεις και υπενθυμίσεις στους πελάτες.",
     icon: Bell,
   },
   {
     title: "Ενσωμάτωση Πληρωμών",
-    description:
-      "Δεχτείτε online πληρωμές με ασφάλεια και ευκολία.",
+    description: "Δεχτείτε online πληρωμές με ασφάλεια και ευκολία.",
     icon: CreditCard,
   },
   {
     title: "Πρόσβαση Πολλαπλών Χρηστών",
-    description:
-      "Δώστε πρόσβαση σε όλη την ομάδα σας με διαφορετικά δικαιώματα.",
+    description: "Δώστε πρόσβαση σε όλη την ομάδα σας με διαφορετικά δικαιώματα.",
     icon: Users,
   },
 ];
@@ -499,14 +510,13 @@ function PlanSelectionForm({
   return (
     <AnimatePresence>
       {isOpen && (
-        // Casting the motion.div as any fixes the TypeScript error regarding children.
-        <(motion.div as any)
+        <MotionDiv
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
         >
-          <motion.form
+          <MotionForm
             onSubmit={step === 3 ? handleSend : handleNext}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -648,8 +658,8 @@ function PlanSelectionForm({
                 </div>
               </div>
             )}
-          </motion.form>
-        </(motion.div as any)>
+          </MotionForm>
+        </MotionDiv>
       )}
     </AnimatePresence>
   );
@@ -730,7 +740,6 @@ function Header({ onTrialOpen }: HeaderProps) {
               </ScrollLink>
             ))}
             <div className="pt-4">
-              {/* Both the menu and hero buttons now use the same onTrialOpen handler */}
               <Button onClick={onTrialOpen} className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md">
                 Δοκιμάστε Δωρεάν
               </Button>
@@ -845,7 +854,7 @@ export default function Home() {
               <Wave position="bottom" />
               <div className="mx-auto max-w-7xl px-6 py-32 md:py-40 lg:py-48">
                 <div className="flex flex-col lg:flex-row items-center gap-12">
-                  <motion.div
+                  <MotionDiv
                     className="lg:w-1/2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -863,8 +872,8 @@ export default function Home() {
                     <Button onClick={() => setIsModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center">
                       Δοκιμάστε Δωρεάν <ArrowRight className="ml-2" />
                     </Button>
-                  </motion.div>
-                  <motion.div
+                  </MotionDiv>
+                  <MotionDiv
                     className="lg:w-1/2 flex justify-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -876,7 +885,7 @@ export default function Home() {
                       autoplay
                       style={{ width: "100%", maxWidth: "700px" }}
                     />
-                  </motion.div>
+                  </MotionDiv>
                 </div>
               </div>
             </section>
@@ -886,7 +895,7 @@ export default function Home() {
               <Wave position="top" className="text-blue-100" />
               <Wave position="bottom" className="text-blue-100" />
               <div className="container mx-auto px-4 relative z-10">
-                <motion.h2
+                <MotionH2
                   className="text-4xl font-bold text-center mb-16 text-gray-900"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -894,10 +903,10 @@ export default function Home() {
                   viewport={{ once: true }}
                 >
                   Πώς Λειτουργεί
-                </motion.h2>
+                </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {HOW_IT_WORKS_STEPS.map((step, index) => (
-                    <motion.div
+                    <MotionDiv
                       key={index}
                       className="bg-white shadow-md rounded-xl p-6 flex items-start gap-4 transition-transform duration-200 hover:scale-105"
                       initial={{ opacity: 0, y: 20 }}
@@ -911,7 +920,7 @@ export default function Home() {
                         <h3 className="text-lg font-semibold text-blue-600">{step.title}</h3>
                         <p className="text-gray-600">{step.description}</p>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   ))}
                 </div>
               </div>
@@ -922,7 +931,7 @@ export default function Home() {
               <Wave position="top" className="text-blue-100" />
               <Wave position="bottom" className="text-blue-100" />
               <div className="container mx-auto px-4 relative z-10">
-                <motion.h2
+                <MotionH2
                   className="text-4xl font-bold text-center mb-16 text-gray-900"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -930,10 +939,10 @@ export default function Home() {
                   viewport={{ once: true }}
                 >
                   Χαρακτηριστικά
-                </motion.h2>
+                </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {FEATURES.map((feature, index) => (
-                    <motion.div
+                    <MotionDiv
                       key={index}
                       className="bg-white shadow-md rounded-xl p-6 flex items-start gap-4 transition-transform duration-200 hover:scale-105"
                       initial={{ opacity: 0, y: 20 }}
@@ -947,7 +956,7 @@ export default function Home() {
                         <h3 className="text-lg font-semibold text-blue-600">{feature.title}</h3>
                         <p className="text-gray-600">{feature.description}</p>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   ))}
                 </div>
               </div>
@@ -958,7 +967,7 @@ export default function Home() {
               <Wave position="top" />
               <Wave position="bottom" />
               <div className="container mx-auto px-4 relative z-10">
-                <motion.h2
+                <MotionH2
                   className="text-4xl font-bold text-center mb-16 text-gray-900"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -973,7 +982,7 @@ export default function Home() {
                     height={40}
                     className="inline-block align-middle"
                   />
-                </motion.h2>
+                </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-white p-8 rounded-lg shadow-lg">
                     <h3 className="text-2xl font-bold mb-4 text-blue-600">
@@ -1020,7 +1029,7 @@ export default function Home() {
           <Element name="Τιμολόγηση">
             <section className="bg-white py-32">
               <div className="container mx-auto px-4">
-                <motion.h2
+                <MotionH2
                   className="text-4xl font-bold text-center mb-16 text-gray-900"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1028,7 +1037,7 @@ export default function Home() {
                   viewport={{ once: true }}
                 >
                   Πακέτα Τιμών
-                </motion.h2>
+                </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {PRICING_PLANS.map((plan, index) => (
                     <div key={index} className="relative bg-white p-8 rounded-lg shadow-lg">
@@ -1088,7 +1097,7 @@ export default function Home() {
               <Wave position="top" />
               <Wave position="bottom" />
               <div className="mx-auto max-w-6xl px-6 relative z-10">
-                <motion.h2
+                <MotionH2
                   className="text-4xl font-bold text-center text-gray-900 mb-4"
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1096,8 +1105,8 @@ export default function Home() {
                   viewport={{ once: true }}
                 >
                   Τι Λένε οι Πελάτες μας
-                </motion.h2>
-                <motion.p
+                </MotionH2>
+                <MotionP
                   className="text-lg text-center text-gray-600 mb-12"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1105,10 +1114,10 @@ export default function Home() {
                   viewport={{ once: true }}
                 >
                   Πώς το <strong className="text-blue-600">DontWait.gr</strong> βελτίωσε την εμπειρία κρατήσεων για επιχειρήσεις και πελάτες.
-                </motion.p>
+                </MotionP>
                 <div className="space-y-8">
                   {TESTIMONIALS.map((testimonial, idx) => (
-                    <motion.div
+                    <MotionDiv
                       key={idx}
                       className="flex flex-col md:flex-row items-center md:items-start bg-white shadow-lg rounded-lg p-6 md:p-8"
                       initial={{ opacity: 0, y: 10 }}
@@ -1129,7 +1138,7 @@ export default function Home() {
                           </span>
                         </div>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   ))}
                 </div>
               </div>
@@ -1137,7 +1146,7 @@ export default function Home() {
           </Element>
           <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-32">
             <div className="container mx-auto px-4 text-center">
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -1161,7 +1170,7 @@ export default function Home() {
                 <p className="mt-6 text-sm text-blue-200">
                   Χωρίς πιστωτική κάρτα • Εύκολη εγκατάσταση • Ακύρωση οποιαδήποτε στιγμή
                 </p>
-              </motion.div>
+              </MotionDiv>
             </div>
           </section>
         </main>
