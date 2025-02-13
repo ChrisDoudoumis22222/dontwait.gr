@@ -54,20 +54,32 @@ import {
 // ---------------------------------------------
 // Helper wrappers for motion elements
 // ---------------------------------------------
-const MotionDiv: React.FC<React.HTMLAttributes<HTMLDivElement> & MotionProps> = (props) => {
-  return <motion.div {...props} />;
+const MotionDiv: React.FC<React.HTMLAttributes<HTMLDivElement> & MotionProps> = ({
+  children,
+  ...props
+}) => {
+  return <motion.div {...props}>{children}</motion.div>;
 };
 
-const MotionForm: React.FC<React.FormHTMLAttributes<HTMLFormElement> & MotionProps> = (props) => {
-  return <motion.form {...props} />;
+const MotionForm: React.FC<React.FormHTMLAttributes<HTMLFormElement> & MotionProps> = ({
+  children,
+  ...props
+}) => {
+  return <motion.form {...props}>{children}</motion.form>;
 };
 
-const MotionH2: React.FC<React.HTMLAttributes<HTMLHeadingElement> & MotionProps> = (props) => {
-  return <motion.h2 {...props} />;
+const MotionH2: React.FC<React.HTMLAttributes<HTMLHeadingElement> & MotionProps> = ({
+  children,
+  ...props
+}) => {
+  return <motion.h2 {...props}>{children}</motion.h2>;
 };
 
-const MotionP: React.FC<React.HTMLAttributes<HTMLParagraphElement> & MotionProps> = (props) => {
-  return <motion.p {...props} />;
+const MotionP: React.FC<React.HTMLAttributes<HTMLParagraphElement> & MotionProps> = ({
+  children,
+  ...props
+}) => {
+  return <motion.p {...props}>{children}</motion.p>;
 };
 
 // ---------------------------------------------
@@ -204,7 +216,6 @@ function Wave({
   const pathTop = "M0,0 C300,80 900,40 1200,80 L1200,0 L0,0 Z";
   const pathBottom = "M0,80 C300,40 900,80 1200,120 L1200,120 L0,120 Z";
   const d = position === "top" ? pathTop : pathBottom;
-
   return (
     <div
       className={`pointer-events-none absolute inset-x-0 ${position}-0 -z-10 ${className}`}
@@ -223,14 +234,15 @@ function Wave({
 }
 
 // ---------------------------------------------
-// Trial Modal Component
+// Trial Modal Component (with logo and onSuccess)
 // ---------------------------------------------
 interface TrialModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-function TrialModal({ isOpen, onClose }: TrialModalProps) {
+function TrialModal({ isOpen, onClose, onSuccess }: TrialModalProps) {
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -247,7 +259,6 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const payload = {
       name: formData.name,
       email: formData.email,
@@ -257,7 +268,6 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
       email_description: "User requested a trial.",
       comments: "",
     };
-
     try {
       const { data, error } = await supabase
         .from("trial_requests")
@@ -266,6 +276,9 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
         console.error("Error inserting trial request:", error.message, error);
       } else {
         console.log("Trial request submitted successfully:", data);
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -305,9 +318,18 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
             leaveTo="opacity-0 scale-95"
           >
             <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              {/* Logo at the top */}
+              <div className="flex justify-center mb-4">
+                <Image
+                  src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
+                  alt="DontWait Logo"
+                  width={120}
+                  height={40}
+                />
+              </div>
               <Dialog.Title
                 as="h3"
-                className="text-lg font-medium leading-6 text-gray-900"
+                className="text-xl font-bold text-gray-900 text-center mb-4"
               >
                 Δοκιμάστε Δωρεάν
               </Dialog.Title>
@@ -323,7 +345,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
                   <div>
@@ -336,7 +358,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
                   <div>
@@ -348,7 +370,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
                       value={formData.companyType}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                       <option value="">Επιλέξτε...</option>
                       <option value="salon">Σαλόνι</option>
@@ -367,7 +389,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
                       value={formData.package}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                       <option value="">Επιλέξτε...</option>
                       <option value="basic">Basic</option>
@@ -375,7 +397,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
                       <option value="enterprise">Enterprise</option>
                     </select>
                   </div>
-                  <div className="mt-4 flex justify-end space-x-2">
+                  <div className="flex justify-end space-x-2">
                     <button
                       type="button"
                       onClick={onClose}
@@ -401,7 +423,7 @@ function TrialModal({ isOpen, onClose }: TrialModalProps) {
 }
 
 // ---------------------------------------------
-// Success Notification Component
+// Success Notification Component (with icon)
 // ---------------------------------------------
 interface SuccessNotificationProps {
   message: string;
@@ -417,8 +439,9 @@ function SuccessNotification({ message, onClose }: SuccessNotificationProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
-      {message}
+    <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center space-x-2">
+      <Check className="h-5 w-5" />
+      <span>{message}</span>
     </div>
   );
 }
@@ -532,7 +555,6 @@ function PlanSelectionForm({
             >
               <CloseX className="h-5 w-5" />
             </button>
-
             {step === 1 && (
               <div>
                 <h2 className="text-xl font-bold mb-4">Επιλογή Πακέτου</h2>
@@ -567,7 +589,6 @@ function PlanSelectionForm({
                 </div>
               </div>
             )}
-
             {step === 2 && (
               <div>
                 <h2 className="text-xl font-bold mb-4">Πληροφορίες Επικοινωνίας</h2>
@@ -581,7 +602,7 @@ function PlanSelectionForm({
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 rounded-md p-2"
+                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div className="mb-4">
@@ -594,7 +615,7 @@ function PlanSelectionForm({
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 rounded-md p-2"
+                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div className="mb-4">
@@ -607,7 +628,7 @@ function PlanSelectionForm({
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 rounded-md p-2"
+                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div className="flex justify-between">
@@ -627,7 +648,6 @@ function PlanSelectionForm({
                 </div>
               </div>
             )}
-
             {step === 3 && (
               <div>
                 <h2 className="text-xl font-bold mb-4">
@@ -637,7 +657,7 @@ function PlanSelectionForm({
                   name="comment"
                   value={formData.comment}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                  className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   rows={4}
                   placeholder="Προσθέστε κάποιο σχόλιο αν επιθυμείτε..."
                 ></textarea>
@@ -835,7 +855,11 @@ export default function Home() {
         <ProgressBar />
         {/* Both the hero button and the header menu button use onTrialOpen */}
         <Header onTrialOpen={() => setIsModalOpen(true)} />
-        <TrialModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <TrialModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => setNotificationVisible(true)}
+        />
         <PlanSelectionForm
           isOpen={isPlanModalOpen}
           onClose={() => setIsPlanModalOpen(false)}
