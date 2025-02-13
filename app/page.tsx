@@ -839,7 +839,7 @@ function Footer() {
             className="flex items-center text-white hover:text-blue-400 transition-colors"
           >
             <Phone className="h-5 w-5 mr-2" />
-            <span>+30 21 2345 6789</span>
+            <span>+30 698 56 73 674</span>
           </a>
         </div>
         <p className="mt-6 text-sm">
