@@ -1251,11 +1251,18 @@ export default function Home() {
                 <p className="text-xl mb-8 text-blue-100">
                   Εξοικονομήστε χρόνο, αυξήστε τα έσοδά σας και προσφέρετε άψογη εμπειρία στους πελάτες σας.
                 </p>
+                {/* Both buttons now open the email pop-up */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                  <Button className="w-[280px] h-[52px] bg-white text-blue-600 hover:bg-blue-50 rounded-full text-base font-medium relative px-6 group shadow-lg">
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-[280px] h-[52px] bg-white text-blue-600 hover:bg-blue-50 rounded-full text-base font-medium relative px-6 group shadow-lg"
+                  >
                     <span className="flex-1">Δωρεάν Δοκιμή 7 Ημερών</span>
                   </Button>
-                  <Button className="w-[280px] h-[52px] bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-full text-base font-medium shadow-lg">
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-[280px] h-[52px] bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-full text-base font-medium shadow-lg"
+                  >
                     Ζητήστε μια Επίδειξη
                   </Button>
                 </div>
