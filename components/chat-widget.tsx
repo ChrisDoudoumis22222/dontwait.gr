@@ -2,23 +2,43 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { X as CloseIcon, MessageSquare as ChatIcon } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, MotionProps } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 
 // ------------------------------
-// Create Supabase Client
+// Create Supabase Client using .env variables
 // ------------------------------
-const supabaseUrl = "https://rdwwczdghdkqhhpmfneo.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkd3djemRnaGRrcWhocG1mbmVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkyNzIyODIsImV4cCI6MjA1NDg0ODI4Mn0.biWNt1s3eMyXEqfEywsDdPZamCyFLUUREYnaTAgJ6hk";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// ---------------------------------------------
+// Helper Wrappers for Framer Motion Elements
+// ---------------------------------------------
+const MotionDiv: React.FC<React.HTMLAttributes<HTMLDivElement> & MotionProps> = ({
+  children,
+  ...props
+}) => {
+  return <motion.div {...props}>{children}</motion.div>;
+};
+
+const MotionButton: React.FC<
+  React.ButtonHTMLAttributes<HTMLButtonElement> & MotionProps
+> = ({ children, ...props }) => {
+  return <motion.button {...props}>{children}</motion.button>;
+};
+
+// ---------------------------------------------
+// ChatWidget Component
+// ---------------------------------------------
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [phase, setPhase] = useState("idle"); // "searching" | "noAnswer"
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailValue, setEmailValue] = useState("");
   const [messageValue, setMessageValue] = useState("");
-  const timerRef = useRef(null);
+  // Explicitly type the timer ref using the return type of setTimeout
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toggleWidget = () => {
     setIsOpen(!isOpen);
@@ -46,7 +66,9 @@ export function ChatWidget() {
     setShowEmailForm(true);
   };
 
-  const handleEmailFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailFormSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
     const payload = {
       email: emailValue,
@@ -75,7 +97,7 @@ export function ChatWidget() {
     <div className="fixed bottom-6 left-6 z-50">
       <AnimatePresence exitBeforeEnter>
         {isOpen ? (
-          <motion.div
+          <MotionDiv
             key="chat-widget"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -119,7 +141,9 @@ export function ChatWidget() {
               {showEmailForm && (
                 <form onSubmit={handleEmailFormSubmit} className="space-y-3">
                   <div>
-                    <label className="block text-sm text-gray-700">Email</label>
+                    <label className="block text-sm text-gray-700">
+                      Email
+                    </label>
                     <input
                       type="email"
                       required
@@ -130,7 +154,9 @@ export function ChatWidget() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-700">Μήνυμα</label>
+                    <label className="block text-sm text-gray-700">
+                      Μήνυμα
+                    </label>
                     <textarea
                       required
                       value={messageValue}
@@ -149,9 +175,9 @@ export function ChatWidget() {
                 </form>
               )}
             </div>
-          </motion.div>
+          </MotionDiv>
         ) : (
-          <motion.button
+          <MotionButton
             key="chat-button"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -162,7 +188,7 @@ export function ChatWidget() {
             aria-label="Open Chat"
           >
             <ChatIcon className="h-6 w-6" />
-          </motion.button>
+          </MotionButton>
         )}
       </AnimatePresence>
     </div>
