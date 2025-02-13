@@ -57,30 +57,22 @@ import {
 const MotionDiv: React.FC<React.HTMLAttributes<HTMLDivElement> & MotionProps> = ({
   children,
   ...props
-}) => {
-  return <motion.div {...props}>{children}</motion.div>;
-};
+}) => <motion.div {...props}>{children}</motion.div>;
 
 const MotionForm: React.FC<React.FormHTMLAttributes<HTMLFormElement> & MotionProps> = ({
   children,
   ...props
-}) => {
-  return <motion.form {...props}>{children}</motion.form>;
-};
+}) => <motion.form {...props}>{children}</motion.form>;
 
 const MotionH2: React.FC<React.HTMLAttributes<HTMLHeadingElement> & MotionProps> = ({
   children,
   ...props
-}) => {
-  return <motion.h2 {...props}>{children}</motion.h2>;
-};
+}) => <motion.h2 {...props}>{children}</motion.h2>;
 
 const MotionP: React.FC<React.HTMLAttributes<HTMLParagraphElement> & MotionProps> = ({
   children,
   ...props
-}) => {
-  return <motion.p {...props}>{children}</motion.p>;
-};
+}) => <motion.p {...props}>{children}</motion.p>;
 
 // ---------------------------------------------
 // Define a local interface for pricing plans
@@ -557,10 +549,26 @@ function PlanSelectionForm({
             </button>
             {step === 1 && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Επιλογή Πακέτου</h2>
+                <h2 className="text-xl font-bold mb-4">
+                  <span className="relative inline-block font-extrabold text-4xl text-blue-900 mx-1">
+                    Επιλογή Πακέτου
+                    <svg
+                      className="absolute -bottom-0.5 w-full max-h-1.5"
+                      viewBox="0 0 55 5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0.65 4C15.89 2.67 48.04 0.4 54.69 2"
+                        strokeWidth="4"
+                        stroke="currentColor"
+                      />
+                    </svg>
+                  </span>
+                </h2>
                 <select
                   name="package"
-                  className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                  className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   required
                   value={formData.package}
                   onChange={handleChange}
@@ -591,7 +599,23 @@ function PlanSelectionForm({
             )}
             {step === 2 && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Πληροφορίες Επικοινωνίας</h2>
+                <h2 className="text-xl font-bold mb-4">
+                  <span className="relative inline-block font-extrabold text-4xl text-blue-900 mx-1">
+                    Πληροφορίες Επικοινωνίας
+                    <svg
+                      className="absolute -bottom-0.5 w-full max-h-1.5"
+                      viewBox="0 0 55 5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0.65 4C15.89 2.67 48.04 0.4 54.69 2"
+                        strokeWidth="4"
+                        stroke="currentColor"
+                      />
+                    </svg>
+                  </span>
+                </h2>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
                     Όνομα
@@ -650,9 +674,7 @@ function PlanSelectionForm({
             )}
             {step === 3 && (
               <div>
-                <h2 className="text-xl font-bold mb-4">
-                  Παρατηρήσεις (Προαιρετικό)
-                </h2>
+                <h2 className="text-xl font-bold mb-4">Παρατηρήσεις (Προαιρετικό)</h2>
                 <textarea
                   name="comment"
                   value={formData.comment}
@@ -686,7 +708,7 @@ function PlanSelectionForm({
 }
 
 // ---------------------------------------------
-// HEADER Component
+// HEADER Component (with active scroll effect)
 // ---------------------------------------------
 interface HeaderProps {
   onTrialOpen: () => void;
@@ -710,11 +732,13 @@ function Header({ onTrialOpen }: HeaderProps) {
             <ScrollLink
               key={label}
               to={label}
+              spy={true}
               smooth={true}
               duration={500}
+              activeClass="active"
               className="relative inline-flex items-center text-gray-700 hover:text-blue-700 transition-colors duration-200
-                         after:absolute after:bottom-[-2px] after:left-0 after:h-[2px] after:w-0 after:bg-blue-600
-                         after:transition-[width] after:ease-in-out after:duration-200 hover:after:w-full"
+                after:absolute after:bottom-[-2px] after:left-0 after:h-[2px] after:w-0 after:bg-blue-600
+                after:transition-[width] after:ease-in-out after:duration-200 hover:after:w-full"
             >
               {Icon && <Icon className="mr-2 h-5 w-5" />}
               {label}
@@ -748,8 +772,10 @@ function Header({ onTrialOpen }: HeaderProps) {
               <ScrollLink
                 key={label}
                 to={label}
+                spy={true}
                 smooth={true}
                 duration={500}
+                activeClass="active"
                 className="block w-full text-gray-700 hover:text-blue-600 text-lg font-medium transition-colors flex items-center"
                 onClick={() => {
                   (document.activeElement as HTMLElement)?.blur();
@@ -920,13 +946,27 @@ export default function Home() {
               <Wave position="bottom" className="text-blue-100" />
               <div className="container mx-auto px-4 relative z-10">
                 <MotionH2
-                  className="text-4xl font-bold text-center mb-16 text-gray-900"
+                  className="text-4xl font-bold text-center mb-16"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                   viewport={{ once: true }}
                 >
-                  Πώς Λειτουργεί
+                  <span className="relative inline-block font-extrabold text-4xl text-blue-900 mx-1">
+                    Πώς Λειτουργεί
+                    <svg
+                      className="absolute -bottom-0.5 w-full max-h-1.5"
+                      viewBox="0 0 55 5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0.65 4C15.89 2.67 48.04 0.4 54.69 2"
+                        strokeWidth="4"
+                        stroke="currentColor"
+                      />
+                    </svg>
+                  </span>
                 </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {HOW_IT_WORKS_STEPS.map((step, index) => (
@@ -956,13 +996,27 @@ export default function Home() {
               <Wave position="bottom" className="text-blue-100" />
               <div className="container mx-auto px-4 relative z-10">
                 <MotionH2
-                  className="text-4xl font-bold text-center mb-16 text-gray-900"
+                  className="text-4xl font-bold text-center mb-16"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                   viewport={{ once: true }}
                 >
-                  Χαρακτηριστικά
+                  <span className="relative inline-block font-extrabold text-4xl text-blue-900 mx-1">
+                    Χαρακτηριστικά
+                    <svg
+                      className="absolute -bottom-0.5 w-full max-h-1.5"
+                      viewBox="0 0 55 5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0.65 4C15.89 2.67 48.04 0.4 54.69 2"
+                        strokeWidth="4"
+                        stroke="currentColor"
+                      />
+                    </svg>
+                  </span>
                 </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {FEATURES.map((feature, index) => (
@@ -992,20 +1046,34 @@ export default function Home() {
               <Wave position="bottom" />
               <div className="container mx-auto px-4 relative z-10">
                 <MotionH2
-                  className="text-4xl font-bold text-center mb-16 text-gray-900"
+                  className="text-4xl font-bold text-center mb-16"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                   viewport={{ once: true }}
                 >
                   Γιατί να Επιλέξετε το{" "}
-                  <Image
-                    src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
-                    alt="DontWait Logo"
-                    width={150}
-                    height={40}
-                    className="inline-block align-middle"
-                  />
+                  <span className="relative inline-block mx-1 font-extrabold text-4xl text-blue-900">
+                    <Image
+                      src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
+                      alt="DontWait Logo"
+                      width={150}
+                      height={40}
+                      className="inline-block align-middle"
+                    />
+                    <svg
+                      className="absolute -bottom-0.5 w-full max-h-1.5"
+                      viewBox="0 0 55 5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0.65 4C15.89 2.67 48.04 0.4 54.69 2"
+                        strokeWidth="4"
+                        stroke="currentColor"
+                      />
+                    </svg>
+                  </span>
                 </MotionH2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-white p-8 rounded-lg shadow-lg">
@@ -1054,7 +1122,7 @@ export default function Home() {
             <section className="bg-white py-32">
               <div className="container mx-auto px-4">
                 <MotionH2
-                  className="text-4xl font-bold text-center mb-16 text-gray-900"
+                  className="text-4xl font-bold text-center mb-16"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
@@ -1122,7 +1190,7 @@ export default function Home() {
               <Wave position="bottom" />
               <div className="mx-auto max-w-6xl px-6 relative z-10">
                 <MotionH2
-                  className="text-4xl font-bold text-center text-gray-900 mb-4"
+                  className="text-4xl font-bold text-center mb-4"
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
@@ -1241,6 +1309,12 @@ export default function Home() {
           font-family: Arial, Helvetica, sans-serif;
           background-color: hsl(var(--background));
           color: hsl(var(--foreground));
+        }
+        .active {
+          color: #1e40af !important;
+        }
+        .active::after {
+          width: 100% !important;
         }
         .dark {
           --background: 0 0% 3.9%;
