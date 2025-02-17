@@ -10,9 +10,22 @@ interface PricingCardProps {
   highlighted?: boolean;
 }
 
-export default function PricingCard({ name, price, features, icon: Icon, highlighted }: PricingCardProps) {
+export default function PricingCard({
+  name,
+  price,
+  features,
+  icon: Icon,
+  highlighted,
+}: PricingCardProps) {
+  // Conditionally add the "pro-glow" class if this plan is the Pro plan.
+  const cardClasses = `
+    p-6 rounded-lg shadow-md border
+    ${highlighted ? "border-blue-600" : "border-gray-200"}
+    ${name === "Pro" ? "pro-glow" : ""}
+  `;
+
   return (
-    <div className={`p-6 rounded-lg shadow-md border ${highlighted ? "border-blue-600" : "border-gray-200"}`}>
+    <div className={cardClasses}>
       <div className="flex items-center mb-4">
         <Icon className="h-8 w-8 text-blue-600 mr-2" />
         <h3 className="text-2xl font-bold">{name}</h3>

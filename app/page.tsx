@@ -1118,72 +1118,102 @@ export default function Home() {
               </div>
             </section>
           </Element>
+
+
+          
           <Element name="Τιμολόγηση">
-            <section className="bg-white py-32">
-              <div className="container mx-auto px-4">
-                <MotionH2
-                  className="text-4xl font-bold text-center mb-16"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  Πακέτα Τιμών
-                </MotionH2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {PRICING_PLANS.map((plan, index) => (
-                    <div key={index} className="relative bg-white p-8 rounded-lg shadow-lg">
-                      {plan.highlighted && (
-                        <div className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-bold uppercase rounded-bl-lg rounded-tr-lg">
-                          Πιο Δημοφιλές
-                        </div>
-                      )}
-                      <div className="flex items-center mb-4">
-                        <div className="p-2 rounded-full mr-4 bg-gray-100">
-                          <plan.icon className={`w-8 h-8 ${plan.highlighted ? "text-blue-600" : "text-gray-600"}`} />
-                        </div>
-                        <h3 className={`text-2xl font-bold ${plan.highlighted ? "text-blue-600" : "text-gray-900"}`}>
-                          {plan.name}
-                        </h3>
+          <section className="bg-white py-32">
+            <div className="container mx-auto px-4">
+              <MotionH2
+                className="text-4xl font-bold text-center mb-16"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Πακέτα Τιμών
+              </MotionH2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {PRICING_PLANS.map((plan, index) => (
+                  <div
+                    key={index}
+                    className={`relative bg-white p-8 rounded-lg shadow-lg ${
+                      plan.name === "Pro" ? "shadow-[0_0_20px_rgba(37,99,235,0.5)]" : ""
+                    }`}
+                  >
+                    {plan.highlighted && (
+                      <div className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-bold uppercase rounded-bl-lg rounded-tr-lg">
+                        Πιο Δημοφιλές
                       </div>
-                      <p className="text-3xl font-bold mb-6">{plan.price}</p>
-                      <ul className="space-y-3 mb-8">
-                        {plan.features.map((feature, i) => (
-                          <li key={i} className="flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-check text-green-500 mr-2"
-                            >
-                              <path d="M20 6 9 17l-5-5"></path>
-                            </svg>
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        onClick={() => handlePlanSelection(plan.name)}
-                        className={
-                          plan.highlighted
-                            ? "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full h-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white"
-                            : "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full h-10 bg-gray-800 hover:bg-gray-900 text-white"
-                        }
+                    )}
+                    <div className="flex items-center mb-4">
+                      <div className="p-2 rounded-full mr-4 bg-gray-100">
+                        <plan.icon
+                          className={`w-8 h-8 ${
+                            plan.highlighted ? "text-blue-600" : "text-gray-600"
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`text-2xl font-bold ${
+                          plan.highlighted ? "text-blue-600" : "text-gray-900"
+                        }`}
                       >
-                        Επιλογή Πακέτου
-                      </Button>
+                        {plan.name}
+                      </h3>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Keep the main price the same, only make /έτος smaller and grey */}
+                    <p className="text-3xl font-bold mb-6">
+                      {plan.price}
+                      {plan.name !== "Enterprise" && (
+                        <span className="text-sm font-normal text-gray-500 ml-1">
+                          /έτος
+                        </span>
+                      )}
+                    </p>
+
+                    <ul className="space-y-3 mb-8">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-check text-green-500 mr-2"
+                          >
+                            <path d="M20 6 9 17l-5-5"></path>
+                          </svg>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      onClick={() => handlePlanSelection(plan.name)}
+                      className={
+                        plan.highlighted
+                          ? "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full h-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white"
+                          : "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full h-10 bg-gray-800 hover:bg-gray-900 text-white"
+                      }
+                    >
+                      Επιλογή Πακέτου
+                    </Button>
+                  </div>
+                ))}
               </div>
-            </section>
-          </Element>
+            </div>
+          </section>
+        </Element>
+
+
+
+
           <Element name="Μαρτυρίες">
             <section className="relative isolate bg-gradient-to-br from-white via-blue-50 to-blue-100 py-32">
               <Wave position="top" />
