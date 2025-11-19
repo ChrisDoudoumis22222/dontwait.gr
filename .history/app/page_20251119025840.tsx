@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { Element } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
@@ -35,11 +35,16 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------
-// Helper wrappers for motion elements (loosened types)
+// Helper wrappers for motion elements
 // ---------------------------------------------
-const MotionDiv: any = motion.div;
-const MotionH2: any = motion.h2;
-const MotionP: any = motion.p;
+type MotionDivProps = React.ComponentProps<typeof motion.div>;
+const MotionDiv = (props: MotionDivProps) => <motion.div {...props} />;
+
+type MotionH2Props = React.ComponentProps<typeof motion.h2>;
+const MotionH2 = (props: MotionH2Props) => <motion.h2 {...props} />;
+
+type MotionPProps = React.ComponentProps<typeof motion.p>;
+const MotionP = (props: MotionPProps) => <motion.p {...props} />;
 
 // ---------------------------------------------
 // Constants / Data Arrays

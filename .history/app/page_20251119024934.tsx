@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { Element } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
@@ -35,11 +35,15 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------
-// Helper wrappers for motion elements (loosened types)
+// Helper wrappers for motion elements
 // ---------------------------------------------
-const MotionDiv: any = motion.div;
-const MotionH2: any = motion.h2;
-const MotionP: any = motion.p;
+const MotionDiv: React.FC<
+  React.HTMLAttributes<HTMLDivElement> & MotionProps
+> = ({ children, ...props }) => <motion.div {...props}>{children}</motion.div>;
+
+const MotionH2: React.FC<
+  React.HTMLAttributes<HTMLHeadingElement> & MotionProps
+> = ({ children, ...props }) => <motion.h2 {...props}>{children}</motion.h2>;
 
 // ---------------------------------------------
 // Constants / Data Arrays
@@ -160,7 +164,7 @@ const FullscreenLoader: React.FC = () => {
           }}
         />
 
-        <MotionDiv
+        <motion.div
           className="absolute -bottom-4 h-1.5 w-16 rounded-full bg-slate-200"
           initial={{ opacity: 0.4, scaleX: 0.6 }}
           animate={{ opacity: [0.4, 1, 0.4], scaleX: [0.6, 1, 0.6] }}
@@ -168,14 +172,14 @@ const FullscreenLoader: React.FC = () => {
         />
       </MotionDiv>
 
-      <MotionP
+      <motion.p
         className="mt-8 text-[10px] md:text-xs tracking-[0.35em] uppercase text-slate-500"
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.4 }}
       >
         Φόρτωση DontWait.gr
-      </MotionP>
+      </motion.p>
     </div>
   );
 };
@@ -275,7 +279,7 @@ export default function Home() {
         {/* 🔵 Initial page loader overlay */}
         <AnimatePresence>
           {showInitialLoader && (
-            <MotionDiv
+            <motion.div
               key="page-loader"
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
@@ -284,7 +288,7 @@ export default function Home() {
               className="fixed inset-0 z-[9999]"
             >
               <FullscreenLoader />
-            </MotionDiv>
+            </motion.div>
           )}
         </AnimatePresence>
 

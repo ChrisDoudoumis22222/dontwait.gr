@@ -35,11 +35,16 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------
-// Helper wrappers for motion elements (loosened types)
+// Helper wrappers for motion elements
 // ---------------------------------------------
-const MotionDiv: any = motion.div;
-const MotionH2: any = motion.h2;
-const MotionP: any = motion.p;
+type MotionDivProps = React.ComponentProps<typeof motion.div>;
+const MotionDiv: React.FC<MotionDivProps> = (props) => <motion.div {...props} />;
+
+type MotionH2Props = React.ComponentProps<typeof motion.h2>;
+const MotionH2: React.FC<MotionH2Props> = (props) => <motion.h2 {...props} />;
+
+type MotionPProps = React.ComponentProps<typeof motion.p>;
+const MotionP: React.FC<MotionPProps> = (props) => <motion.p {...props} />;
 
 // ---------------------------------------------
 // Constants / Data Arrays

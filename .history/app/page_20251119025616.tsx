@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { Element } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
@@ -35,11 +35,19 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------
-// Helper wrappers for motion elements (loosened types)
+// Helper wrappers for motion elements
 // ---------------------------------------------
-const MotionDiv: any = motion.div;
-const MotionH2: any = motion.h2;
-const MotionP: any = motion.p;
+const MotionDiv: React.FC<
+  React.HTMLAttributes<HTMLDivElement> & MotionProps
+> = ({ children, ...props }) => <motion.div {...props}>{children}</motion.div>;
+
+const MotionH2: React.FC<
+  React.HTMLAttributes<HTMLHeadingElement> & MotionProps
+> = ({ children, ...props }) => <motion.h2 {...props}>{children}</motion.h2>;
+
+const MotionP: React.FC<
+  React.HTMLAttributes<HTMLParagraphElement> & MotionProps
+> = ({ children, ...props }) => <motion.p {...props}>{children}</motion.p>;
 
 // ---------------------------------------------
 // Constants / Data Arrays
@@ -275,7 +283,7 @@ export default function Home() {
         {/* 🔵 Initial page loader overlay */}
         <AnimatePresence>
           {showInitialLoader && (
-            <MotionDiv
+            <motion.div
               key="page-loader"
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
@@ -284,7 +292,7 @@ export default function Home() {
               className="fixed inset-0 z-[9999]"
             >
               <FullscreenLoader />
-            </MotionDiv>
+            </motion.div>
           )}
         </AnimatePresence>
 
