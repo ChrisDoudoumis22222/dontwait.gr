@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Popover, Transition } from "@headlessui/react";
@@ -14,6 +13,52 @@ import {
   Settings,
   MessageCircle,
 } from "lucide-react";
+
+// ---------------------------------------------
+// Brand color (same as LOGO_BRAND_COLOR)
+// ---------------------------------------------
+const LOGO_BRAND_COLOR = "#1e3a8a"; // text-blue-900
+
+// ---------------------------------------------
+// Inline DontWait logo using /images/dontwait.svg
+// Forced to blue via CSS mask
+// ---------------------------------------------
+const InlineLogo: React.FC<{ className?: string; size?: "sm" | "lg" }> = ({
+  className,
+  size = "sm",
+}) => {
+  const height = size === "lg" ? 48 : 32; // px
+  const width = size === "lg" ? 200 : 140; // px
+
+  return (
+    <span
+      className={`inline-flex align-middle items-center ${
+        className ?? ""
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        style={
+          {
+            display: "inline-block",
+            width,
+            height,
+            backgroundColor: LOGO_BRAND_COLOR, // 🔵 force blue
+            WebkitMaskImage: "url('/images/dontwait.svg')",
+            maskImage: "url('/images/dontwait.svg')",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+          } as React.CSSProperties
+        }
+      />
+      <span className="sr-only">DontWait</span>
+    </span>
+  );
+};
 
 // ---------------------------------------------
 // Nav data
@@ -40,13 +85,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onTrialOpen }) => {
           {/* Logo -> always go to main page */}
           <div className="flex-shrink-0">
             <Link href="/" className="inline-flex items-center">
-              <Image
-                src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
-                alt="DontWait Logo"
-                width={180}
-                height={50}
-                priority
-              />
+              {/* 🔵 SVG logo, forced blue */}
+              <InlineLogo size="lg" />
             </Link>
           </div>
 

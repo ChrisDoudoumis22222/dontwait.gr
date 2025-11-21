@@ -68,14 +68,21 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
 
   const [formData, setFormData] = useState({
     package: selectedPlan || "",
+    billing_period: "monthly" as "monthly" | "yearly",
     name: "",
     email: "",
     phone: "",
     comment: "",
   });
 
+  // ✅ NEW: state for privacy acceptance
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, package: selectedPlan || "" }));
+    setFormData((prev) => ({
+      ...prev,
+      package: selectedPlan || "",
+    }));
   }, [selectedPlan]);
 
   const packageLabels: Record<string, string> = {
@@ -92,7 +99,11 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
       | React.ChangeEvent<HTMLSelectElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
+    if (type === "checkbox") {
+      // only checkbox we have is acceptedPrivacy, handled separately
+      return;
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -118,12 +129,14 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
   const resetForm = () => {
     setFormData({
       package: selectedPlan || "",
+      billing_period: "monthly",
       name: "",
       email: "",
       phone: "",
       comment: "",
     });
     setStep(1);
+    setAcceptedPrivacy(false); // ✅ reset checkbox
   };
 
   const handleClose = () => {
@@ -135,16 +148,29 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
 
   const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // ✅ require privacy acceptance before sending
+    if (!acceptedPrivacy) {
+      alert(
+        "Πρέπει να αποδεχτείτε την Πολιτική Απορρήτου για να συνεχίσετε."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from(`Request Form`).insert([
+      const { error } = await supabase.from("request_form_leads").insert([
         {
+          // match your Postgres columns exactly
           Name: formData.name,
           Email: formData.email,
           Type: formData.phone,
           Packets: formData.package,
+          selected_plan: formData.package || selectedPlan, // NOT NULL in DB
+          billing_period: formData.billing_period, // 'monthly' or 'yearly'
           createdat: new Date().toISOString(),
+          // Δεν στέλνω acceptedPrivacy / comment γιατί δεν υπάρχουν στήλες ακόμα.
         },
       ]);
 
@@ -366,7 +392,8 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
                         Επιλογή Πακέτου
                       </h2>
                       <p className="text-xs sm:text-sm text-gray-500 mb-6">
-                        Διαλέξτε το πακέτο που σας ενδιαφέρει.
+                        Διαλέξτε το πακέτο και τον τρόπο χρέωσης που σας
+                        ενδιαφέρει.
                       </p>
 
                       <MotionSelect
@@ -375,12 +402,25 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
                         onChange={handleChange}
                         disabled={isSubmitting}
                         whileFocus={{ scale: 1.01 }}
-                        className="w-full border-2 border-gray-200 p-3 rounded-lg mb-6 focus:border-blue-500 focus:outline-none transition-colors bg-white text-sm"
+                        className="w-full border-2 border-gray-200 p-3 rounded-lg mb-4 focus:border-blue-500 focus:outline-none transition-colors bg-white text-sm"
                       >
                         <option value="">Επιλέξτε Πακέτο...</option>
                         <option value="basic">Basic</option>
                         <option value="pro">Pro</option>
                         <option value="enterprise">Enterprise</option>
+                      </MotionSelect>
+
+                      {/* Billing period select */}
+                      <MotionSelect
+                        name="billing_period"
+                        value={formData.billing_period}
+                        onChange={handleChange}
+                        disabled={isSubmitting}
+                        whileFocus={{ scale: 1.01 }}
+                        className="w-full border-2 border-gray-200 p-3 rounded-lg mb-6 focus:border-blue-500 focus:outline-none transition-colors bg-white text-sm"
+                      >
+                        <option value="monthly">Μηνιαία χρέωση</option>
+                        <option value="yearly">Ετήσια χρέωση</option>
                       </MotionSelect>
 
                       <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
@@ -503,8 +543,35 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
                         disabled={isSubmitting}
                         whileFocus={{ scale: 1.01 }}
                         placeholder="Προαιρετικό σχόλιο..."
-                        className="w-full border-2 border-gray-200 p-3 rounded-lg mb-6 focus:border-blue-500 focus:outline-none transition-colors resize-none bg-white text-sm"
+                        className="w-full border-2 border-gray-200 p-3 rounded-lg mb-4 focus:border-blue-500 focus:outline-none transition-colors resize-none bg-white text-sm"
                       />
+
+                      {/* ✅ Privacy Policy Consent */}
+                      <div className="flex items-start gap-2 mb-6">
+                        <MotionInput
+                          type="checkbox"
+                          name="acceptedPrivacy"
+                          disabled={isSubmitting}
+                          checked={acceptedPrivacy}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setAcceptedPrivacy(e.target.checked)
+                          }
+                          whileTap={{ scale: 0.9 }}
+                          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <p className="text-xs sm:text-sm text-gray-600 leading-snug">
+                          Δηλώνω ότι έχω διαβάσει και αποδέχομαι την{" "}
+                          <a
+                            href="/privacy-policy"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-700 underline font-medium"
+                          >
+                            Πολιτική Απορρήτου
+                          </a>{" "}
+                          του DontWait.gr.
+                        </p>
+                      </div>
 
                       <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-3">
                         <MotionButton
@@ -518,9 +585,17 @@ export const PlanSelectionForm: React.FC<PlanSelectionFormProps> = ({
                         </MotionButton>
                         <MotionButton
                           type="submit"
-                          disabled={isSubmitting}
-                          whileHover={!isSubmitting ? { scale: 1.02 } : {}}
-                          whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                          disabled={isSubmitting || !acceptedPrivacy}
+                          whileHover={
+                            !isSubmitting && acceptedPrivacy
+                              ? { scale: 1.02 }
+                              : {}
+                          }
+                          whileTap={
+                            !isSubmitting && acceptedPrivacy
+                              ? { scale: 0.98 }
+                              : {}
+                          }
                           className="w-full sm:w-auto px-5 sm:px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                         >
                           {isSubmitting ? (

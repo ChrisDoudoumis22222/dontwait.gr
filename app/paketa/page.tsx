@@ -4,14 +4,14 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
-import { Check, X, ArrowRight, Mail, Phone } from "lucide-react";
+import { Check, X, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Navbar } from "@/components/Navbar";
 import { TrialModal } from "@/components/ui/trial-modal";
 import { PlanSelectionForm } from "@/components/ui/plan-selection-form";
-import { ChatWidget } from "@/components/chat-widget";
+import { ChatWidget } from "@/components/ui/chat-widget";
+import Footer from "@/components/Footer"; // ✅ use shared footer
 
 // ---------------------------------------------
 // Motion wrappers (fix TS children error)
@@ -162,59 +162,6 @@ const FEATURES = [
 ];
 
 // ---------------------------------------------
-// FOOTER Component (same style as home)
-// ---------------------------------------------
-function Footer() {
-  return (
-    <footer className="relative bg-gradient-to-br from-blue-800 to-gray-900 text-white py-12 mt-16">
-      <div className="absolute inset-x-0 top-0 -mt-1 overflow-hidden leading-none">
-        <svg
-          className="w-full h-12"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,0 C300,80 900,40 1200,80 L1200,0 L0,0 Z"
-            fill="currentColor"
-            className="text-blue-800"
-          />
-        </svg>
-      </div>
-      <div className="container mx-auto px-4 relative z-10 text-center">
-        <div className="flex justify-center">
-          <Image
-            src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
-            alt="DontWait Logo"
-            width={120}
-            height={40}
-            className="mx-auto rounded-lg"
-          />
-        </div>
-        <div className="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-8">
-          <a
-            href="mailto:info@dontwait.gr"
-            className="flex items-center text-white hover:text-blue-400 transition-colors"
-          >
-            <Mail className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>info@dontwait.gr</span>
-          </a>
-          <a
-            href="tel:+306985673674"
-            className="flex items-center text-white hover:text-blue-400 transition-colors"
-          >
-            <Phone className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>+30 698 56 73 674</span>
-          </a>
-        </div>
-        <p className="mt-2 text-sm">
-          &copy; {new Date().getFullYear()} DontWait. All rights reserved.
-        </p>
-      </div>
-    </footer>
-  );
-}
-
-// ---------------------------------------------
 // MAIN PAGE
 // ---------------------------------------------
 export default function PackagesComparisonPage() {
@@ -322,7 +269,9 @@ export default function PackagesComparisonPage() {
               </h1>
               <p className="max-w-2xl mx-auto text-sm sm:text-base text-gray-600">
                 Δείτε αναλυτικά τι προσφέρει κάθε πακέτο του{" "}
-                <span className="font-semibold text-blue-700">DontWait.gr</span>{" "}
+                <span className="font-semibold text-blue-700">
+                  DontWait.gr
+                </span>{" "}
                 και επιλέξτε αυτό που ταιριάζει στις ανάγκες και στο μέγεθος της
                 επιχείρησής σας.
               </p>
@@ -452,7 +401,9 @@ export default function PackagesComparisonPage() {
                   Για επιχειρήσεις που θέλουν online πληρωμές, SMS
                   υπενθυμίσεις και συνεργασία ομάδας.
                 </p>
-                <p className="text-2xl font-bold mb-1">{getPriceText("pro")}</p>
+                <p className="text-2xl font-bold mb-1">
+                  {getPriceText("pro")}
+                </p>
                 <p className="text-[11px] text-blue-100 mb-1">
                   Εφάπαξ setup fee: €449 (πλήρης παραμετροποίηση & onboarding).
                 </p>
@@ -487,11 +438,11 @@ export default function PackagesComparisonPage() {
                   Επικοινωνήστε μαζί μας
                 </p>
                 <p className="text-[11px] text-gray-500 mb-1">
-                  Τιμολόγηση κατόπιν συζήτησης, ανάλογα με όγκο, ανάγκες &
+                  Τιμολόγηση κατόπιν συζήτησης, ανάλογα με όγκο, ανάγκες &amp;
                   απαιτήσεις.
                 </p>
                 <p className="text-[11px] text-gray-500 mb-4">
-                  White-label, πολλαπλές τοποθεσίες, SLA υποστήριξης &
+                  White-label, πολλαπλές τοποθεσίες, SLA υποστήριξης &amp;
                   δυνατότητα για custom mobile app. Setup fee κατόπιν
                   συμφωνίας.
                 </p>
@@ -608,6 +559,7 @@ export default function PackagesComparisonPage() {
           </section>
         </main>
 
+        {/* ✅ Shared footer + chat widget */}
         <Footer />
         <ChatWidget />
       </div>

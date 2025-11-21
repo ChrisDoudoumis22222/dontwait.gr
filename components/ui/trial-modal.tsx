@@ -77,6 +77,9 @@ export const TrialModal: React.FC<TrialModalProps> = ({
     package: "",
   });
 
+  // ✅ NEW: state for privacy policy acceptance
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -94,6 +97,7 @@ export const TrialModal: React.FC<TrialModalProps> = ({
       companyTypeOther: "",
       package: "",
     });
+    setAcceptedPrivacy(false); // ✅ reset privacy checkbox
   };
 
   const handleClose = () => {
@@ -104,6 +108,16 @@ export const TrialModal: React.FC<TrialModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // ✅ Check privacy acceptance first
+    if (!acceptedPrivacy) {
+      setToast({
+        type: "error",
+        message:
+          "Πρέπει να αποδεχτείτε την Πολιτική Απορρήτου για να συνεχίσετε.",
+      });
+      return;
+    }
 
     if (
       formData.companyType === "other" &&
@@ -131,6 +145,8 @@ export const TrialModal: React.FC<TrialModalProps> = ({
           Type: typeToStore,
           Packets: formData.package,
           createdat: new Date().toISOString(),
+          // ❗ Δεν βάζω acceptedPrivacy στο Supabase,
+          // για να μην σκάσει αν δεν υπάρχει στήλη.
         },
       ]);
 
@@ -324,6 +340,33 @@ export const TrialModal: React.FC<TrialModalProps> = ({
                   </MotionSelect>
                 </div>
 
+                {/* ✅ Privacy Policy Consent */}
+                <div className="flex items-start gap-2 pt-1">
+                  <MotionInput
+                    type="checkbox"
+                    name="acceptedPrivacy"
+                    disabled={isSubmitting}
+                    checked={acceptedPrivacy}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setAcceptedPrivacy(e.target.checked)
+                    }
+                    whileTap={{ scale: 0.9 }}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <p className="text-xs sm:text-sm text-gray-600 leading-snug">
+                    Δηλώνω ότι έχω διαβάσει και αποδέχομαι την{" "}
+                    <a
+                      href="/privacy-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 underline font-medium"
+                    >
+                      Πολιτική Απορρήτου
+                    </a>{" "}
+                    του DontWait.gr.
+                  </p>
+                </div>
+
                 {/* Buttons */}
                 <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-2">
                   <MotionButton
@@ -338,9 +381,13 @@ export const TrialModal: React.FC<TrialModalProps> = ({
                   </MotionButton>
                   <MotionButton
                     type="submit"
-                    disabled={isSubmitting}
-                    whileHover={!isSubmitting ? { scale: 1.02 } : {}}
-                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                    disabled={isSubmitting || !acceptedPrivacy} // ✅ cannot submit until accepted
+                    whileHover={
+                      !isSubmitting && acceptedPrivacy ? { scale: 1.02 } : {}
+                    }
+                    whileTap={
+                      !isSubmitting && acceptedPrivacy ? { scale: 0.98 } : {}
+                    }
                     className="w-full sm:w-auto px-5 sm:px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                   >
                     {isSubmitting ? (

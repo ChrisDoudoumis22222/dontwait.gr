@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import { Element } from "react-scroll";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,13 +11,14 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 // Custom Components Imports
 // ------------------------------
 import { Button } from "@/components/ui/button";
-import { ChatWidget } from "@/components/chat-widget";
+import { ChatWidget } from "@/components/ui/chat-widget";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import PricingCards from "@/components/pricing-card";
 import { TrialModal } from "@/components/ui/trial-modal";
 import { PlanSelectionForm } from "@/components/ui/plan-selection-form";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import { Navbar } from "@/components/Navbar";
+import Footer from "@/components/Footer"; // ✅ new footer import
 
 // Lucide imports actually used on this page
 import {
@@ -30,8 +31,6 @@ import {
   CreditCard,
   Users,
   Check,
-  Mail,
-  Phone,
 } from "lucide-react";
 
 // ---------------------------------------------
@@ -181,57 +180,39 @@ const FullscreenLoader: React.FC = () => {
 };
 
 // ---------------------------------------------
-// FOOTER Component
+// Lazy loader for "Πώς Λειτουργεί" section
+// Loads the component only when it scrolls into view
 // ---------------------------------------------
-function Footer() {
-  return (
-    <footer className="relative bg-gradient-to-br from-blue-800 to-gray-900 text-white py-12">
-      <div className="absolute inset-x-0 top-0 -mt-1 overflow-hidden leading-none">
-        <svg
-          className="w-full h-12"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,0 C300,80 900,40 1200,80 L1200,0 L0,0 Z"
-            fill="currentColor"
-            className="text-blue-800"
-          />
-        </svg>
-      </div>
-      <div className="container mx-auto px-4 relative z-10 text-center">
-        <div className="flex justify-center">
-          <Image
-            src="https://i.ibb.co/DPmSsDrN/2025-02-10-203844.png"
-            alt="DontWait Logo"
-            width={120}
-            height={40}
-            className="mx-auto rounded-lg"
-          />
-        </div>
-        <div className="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-8">
-          <a
-            href="mailto:info@dontwait.gr"
-            className="flex items-center text-white hover:text-blue-400 transition-colors"
-          >
-            <Mail className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>info@dontwait.gr</span>
-          </a>
-          <a
-            href="tel:+306985673674"
-            className="flex items-center text-white hover:text-blue-400 transition-colors"
-          >
-            <Phone className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>+30 698 56 73 674</span>
-          </a>
-        </div>
-        <p className="mt-6 text-sm">
-          &copy; {new Date().getFullYear()} DontWait. All rights reserved.
-        </p>
-      </div>
-    </footer>
-  );
-}
+const LazyHowItWorksSection: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect(); // load once and stop observing
+          }
+        });
+      },
+      {
+        threshold: 0.25,
+      }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return <div ref={containerRef}>{isVisible ? <HowItWorksSection /> : null}</div>;
+};
 
 // ---------------------------------------------
 // MAIN HOME COMPONENT (Default Export)
@@ -312,7 +293,8 @@ export default function Home() {
           />
         )}
 
-        <main className="pt-20">
+        {/* 🔹 Smaller top spacing on mobile, larger on desktop */}
+        <main className="pt-16 md:pt-24">
           {/* HERO */}
           <Element name="Hero">
             <section className="relative isolate overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100">
@@ -363,9 +345,9 @@ export default function Home() {
             </section>
           </Element>
 
-          {/* ΠΩΣ ΛΕΙΤΟΥΡΓΕΙ */}
+          {/* ΠΩΣ ΛΕΙΤΟΥΡΓΕΙ – lazy loaded when it comes into view */}
           <Element name="Πώς Λειτουργεί">
-            <HowItWorksSection />
+            <LazyHowItWorksSection />
           </Element>
 
           {/* ΧΑΡΑΚΤΗΡΙΣΤΙΚΑ */}
@@ -615,6 +597,7 @@ export default function Home() {
           </section>
         </main>
 
+        {/* ✅ Reusable footer component */}
         <Footer />
         <ChatWidget />
       </div>

@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import React from "react";
 import "./style/globals.css";
+import { CookieBanner } from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dontwait.gr"),
@@ -71,7 +72,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="el">
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Global cookie banner */}
+        <CookieBanner />
+      </body>
     </html>
   );
 }
