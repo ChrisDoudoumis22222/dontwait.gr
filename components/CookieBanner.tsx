@@ -11,6 +11,9 @@ const SESSION_KEY = "dontwait_cookie_session_id";
 
 type ConsentChoice = "accepted" | "necessary_only";
 
+/** ---- Motion wrapper to avoid TS children errors ---- */
+const MotionDiv: any = motion.div;
+
 /**
  * Generate or reuse a session id to group multiple visits from same browser.
  */
@@ -62,7 +65,6 @@ async function saveConsentToDb(choice: ConsentChoice) {
       referrer,
       locale,
       banner_version: "v1.0.0", // update this when you change the banner
-      
     });
   } catch (error) {
     console.error("Error saving cookie consent:", error);
@@ -94,16 +96,14 @@ export const CookieBanner: React.FC = () => {
       }
     }
 
-    // Fire-and-forget – DB save happens in the background
     void saveConsentToDb(choice);
-
     setIsVisible(false);
   };
 
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
+        <MotionDiv
           key="cookie-banner"
           initial={{ opacity: 0, y: 40, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -154,21 +154,22 @@ export const CookieBanner: React.FC = () => {
             {/* Right side: buttons */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
-                variant="outline"
-                className="w-full sm:w-auto border-blue-200 text-blue-50 hover:bg-blue-800 hover:text-white rounded-full text-xs sm:text-sm"
+                className="w-full sm:w-auto border border-blue-200 text-blue-50 hover:bg-blue-800 hover:text-white rounded-full text-xs sm:text-sm"
                 onClick={() => handleChoice("necessary_only")}
+                type="button"
               >
                 Μόνο τα απαραίτητα
               </Button>
               <Button
                 className="w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white shadow-md rounded-full text-xs sm:text-sm"
                 onClick={() => handleChoice("accepted")}
+                type="button"
               >
                 Αποδοχή όλων
               </Button>
             </div>
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
     </AnimatePresence>
   );
